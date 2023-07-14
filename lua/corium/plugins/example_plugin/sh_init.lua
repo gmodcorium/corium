@@ -1,0 +1,1 @@
+plugin:SetTitle("Example Plugin") -- устанавливаем заголовок плагина
