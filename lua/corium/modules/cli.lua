@@ -10,8 +10,10 @@ commands_list = {
 
 	check = {
 		fn = function()
-			http.Fetch("https://github.com/smokingplaya/corium/version.txt", function()
-				-- проверка
+			http.Fetch("https://raw.githubusercontent.com/" .. Corium.github .. "/main/version.txt", function(b)
+				local v = tonumber(b)
+
+				console_log(Corium.version == b and "Corium is up to date" or Corium.version > b and "Corium needs to be updated" or "u r developer, nah?")
 			end, function(err)
 				console_log("Failed to get version via github.", err)
 			end)
