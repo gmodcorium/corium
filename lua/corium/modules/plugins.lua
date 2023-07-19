@@ -106,6 +106,10 @@ function plugin_mt:Include(tab)
 	end
 end
 
+function plugin_mt:IncludeShared()
+	Corium.loader.include("sh_init.lua")
+end
+
 function plugin_mt:FormatName(n)
 	return self.id .. "_" .. n
 end
