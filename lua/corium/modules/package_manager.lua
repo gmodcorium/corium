@@ -1,3 +1,14 @@
+function loadpkg(name) -- you can use this function on clientside
+  if not name then error("There is no argument") end
+  if not filesystem.Exists("lua/cpm/" .. name .. ".lua") then error("Package \"" .. name .. "\n not installed.") end
+
+  local args = {include("cpm")}
+
+  if #args == 0 then error("\"" .. name .. "\"library did not return the arguments.") end
+
+  return unpack(args)
+end
+
 if not SERVER then return end
 
 require("gm_filesystem")
@@ -19,16 +30,6 @@ end
 
 // local lib = loadpkg("luandum")
 // lib.create_class(...)
-function loadpkg(name)
-  if not name then error("There is no argument") end
-  if not filesystem.Exists("lua/cpm/" .. name .. ".lua") then error("Package \"" .. name .. "\n not installed.") end
-
-  local args = {include("cpm")}
-
-  if #args == 0 then error("\"" .. name .. "\"library did not return the arguments.") end
-
-  return unpack(args)
-end
 
 -- corium install test main
 local has_installation_currently = false
