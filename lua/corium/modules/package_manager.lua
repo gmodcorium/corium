@@ -31,9 +31,12 @@ function loadpkg(name)
 end
 
 -- corium install test main
+local has_installation_currently = false
 Corium.commands.Add("install", function(args)
+  if has_installation_currently then console_log("You're already installing a different package!") return end
+  has_installation_currently = true
   local name = args[1]
-  if not name then console_log("There is no arguments") return end
+  if not name then console_log("There is no arguments") has_installation_currently = false return end
 
   http.Fetch("https://raw.githubusercontent.com/" .. github_repo .. "/" .. (args[2] or "main") .. "/" .. name .. ".lua", function(b)
     local path = "lua/cpm/" .. name .. ".lua"
@@ -44,10 +47,13 @@ Corium.commands.Add("install", function(args)
 
     filesystem.Create(path, b)
 
+    has_installation_currently = false
+
     if not get_in_db(name) then
       sql.Query("INSERT INTO cpm(name) VALUES(" .. SQLStr(name).. ")")
     end
   end, function(msg)
+    has_installation_currently = false
     console_log("Unable to install package \"" .. name .. "\", server response: " .. (msg "none"))
   end)
 end)
