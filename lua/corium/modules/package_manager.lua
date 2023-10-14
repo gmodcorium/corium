@@ -1,3 +1,5 @@
+print("S")
+
 function loadpkg(name) -- you can use this function on clientside
   if not name then error("There is no argument") end
   if not filesystem.Exists("lua/cpm/" .. name .. ".lua") then error("Package \"" .. name .. "\n not installed.") end
@@ -26,7 +28,7 @@ if not sql.TableExists(sql_table) then
   sql.Query("CREATE TABLE IF NOT EXISTS " .. sql_table .. " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, allow_cl INTEGER)")
 end
 
-//
+--
 
 local files = file.Find("cpm/*.lua", "LUA")
 
@@ -38,7 +40,7 @@ for _, name in ipairs(files) do
   end
 end
 
-//
+--
 
 Corium.commands.Add("install", function(args)
   local name = args[1]
