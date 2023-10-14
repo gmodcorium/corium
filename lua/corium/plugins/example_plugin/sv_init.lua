@@ -1,4 +1,7 @@
 local plugin = plugin -- кэшируем plugin для использования на 9 строке
+local discord = loadpkg("discord")
+
+print("s")
 
 plugin:Include {"sh_init.lua"} -- инклюдим общий файл
 plugin:RegisterNetworks { -- регистрируем нетстринги
