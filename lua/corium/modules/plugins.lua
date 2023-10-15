@@ -58,12 +58,21 @@ function plugin_mt:SetTitle(title)
 	return self
 end
 
-local function find_n_load(path, n) n = path .. "/" .. n; if file.Exists(n, "LUA") then print(n) Corium.loader.include(n) end end
+local errors = {}
+local to_include = function(name, path)
+	local succ, err = pcall(Corium.loader.include, path)
+
+	if !succ then
+		errors[name] = err
+	end
+end
+
+local function find_n_load(name, path, n) n = path .. "/" .. n; if file.Exists(n, "LUA") then to_include(name, n) end end
 
 function plugin_mt:Load()
 	plugin = self
-	find_n_load(self.path, "cl_init.lua")
-	find_n_load(self.path, "sv_init.lua")
+	find_n_load(self.id, self.path, "cl_init.lua")
+	find_n_load(self.id, self.path, "sv_init.lua")
 	plugin = nil
 
 	self.is_loaded = true
@@ -102,12 +111,12 @@ end
 
 function plugin_mt:Include(tab)
 	for _, n in ipairs(tab) do
-		Corium.loader.include(n)
+		to_include(self.id, n)
 	end
 end
 
 function plugin_mt:IncludeShared()
-	Corium.loader.include("sh_init.lua")
+	to_include(self.id, "sh_init.lua")
 end
 
 function plugin_mt:FormatName(n)
@@ -180,7 +189,11 @@ local color_loaded = Color(51, 255, 87)
 local color_notloaded = Color(255, 87, 51)
 
 -- cli: plugin_list
-Corium.use(Corium.commands, "Add", "plugin_list", function(args)
+Corium.use(Corium.commands, "Add", "show_errors", function(args)
+
+end)
+
+Corium.use(Corium.commands, "Add", "plugins", function(args)
 	local pls = {}
 
 	for n, p in pairs(Corium.plugins.list) do
