@@ -1,12 +1,17 @@
+local cached_packages = {}
 function loadpkg(name) -- you can use this function on clientside
+  local package_in_cache = cached_packages[name]
+  if package_in_cache then return package_in_cache end
   if not name then error("There is no argument") end
-  if not file.Exists("cpm/" .. name .. ".lua", "LUA") then error("Package \"" .. name .. "\n not installed.") end
+  if not file.Exists("cpm/" .. name .. ".lua", "LUA") then error("Package \"" .. name .. "\" not installed.") end
 
-  local args = {include("cpm/" .. name .. ".lua")}
+  local arg = include("cpm/" .. name .. ".lua")
 
-  if #args == 0 then error("\"" .. name .. "\"library did not return the arguments.") end
+  if not arg or not istable(arg) then error("\"" .. name .. "\" library did not return the table.") end
 
-  return unpack(args)
+  cached_packages[name] = arg
+
+  return arg
 end
 
 if not SERVER then return end
@@ -43,7 +48,6 @@ for _, name in ipairs(files) do
   end
 end
 
-
 --
 
 Corium.commands.Add("install", function(args)
@@ -53,7 +57,7 @@ Corium.commands.Add("install", function(args)
   http.Fetch("https://raw.githubusercontent.com/" .. github_repo .. "/" .. (args[2] or "main") .. "/" .. name .. "/lib.lua", function(b)
     http.Fetch("https://raw.githubusercontent.com/" .. github_repo .. "/" .. (args[2] or "main") .. "/" .. name .. "/lib.json", function(json_b)
       local lib_info = util.JSONToTable(json_b)
-      local allow_cl = lib_info.allow_clientside and lib_info.allow_clientside == 1
+      local allow_cl = lib_info.allow_clientside and lib_info.allow_clientside == "true"
       local path = "lua/cpm/" .. name .. ".lua"
 
       if filesystem.Exists(path) then

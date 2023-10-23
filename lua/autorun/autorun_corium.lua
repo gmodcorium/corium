@@ -2,7 +2,7 @@ Corium = {}
 Corium.__start = SysTime()
 Corium.author = "gmodcorium"
 Corium.url = "https://github.com/gmodcorium/corium"
-Corium.version = 1.2
+Corium.version = 1.3
 Corium.main_folder = "corium"
 Corium.modules_folder = Corium.main_folder .. "/modules"
 
